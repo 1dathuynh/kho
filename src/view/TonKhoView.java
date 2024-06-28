@@ -42,7 +42,7 @@ public class TonKhoView extends JFrame {
         panel.setOpaque(false);
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.add(Box.createVerticalGlue());
-
+        // icon
         addMenuItem(panel, "Đơn Hàng", "/icon_DonHang.png");
         addMenuItem(panel, "Tồn Kho", "/icon_TonKho.png");
         addMenuItem(panel, "Nhập/Xuất", "/icon_NhapXuat.png");
