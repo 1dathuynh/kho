@@ -1,5 +1,5 @@
 package model;
-
+//
 public class Inventory {
     private String productCode;
     private String productName;

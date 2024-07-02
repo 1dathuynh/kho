@@ -15,7 +15,7 @@ public class ProductForm extends JPanel {
         add(new JLabel("Mã sản phẩm:"));
         codeField = new JTextField();
         if (product != null) {
-            codeField.setText(product.getCode());
+            codeField.setText(product.getmaSanPham());
             codeField.setEditable(false);
         }
         add(codeField);
@@ -23,14 +23,14 @@ public class ProductForm extends JPanel {
         add(new JLabel("Tên sản phẩm:"));
         nameField = new JTextField();
         if (product != null) {
-            nameField.setText(product.getName());
+            nameField.setText(product.getTenSanPham());
         }
         add(nameField);
 
         add(new JLabel("Số lượng:"));
         quantityField = new JTextField();
         if (product != null) {
-            quantityField.setText(String.valueOf(product.getQuantity()));
+            quantityField.setText(String.valueOf(product.getsoLuongTon()));
         }
         add(quantityField);
     }

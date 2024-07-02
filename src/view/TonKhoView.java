@@ -194,8 +194,8 @@ public class TonKhoView extends JFrame {
         warehouseProducts.put(warehouseCode, new HashMap<>());
         StringBuilder productList = new StringBuilder();
         for (Product product : products) {
-            productList.append("Code: ").append(product.getCode()).append(", Name: ").append(product.getName()).append(", Quantity: ").append(product.getQuantity()).append("\n");
-            warehouseProducts.get(warehouseCode).put(product.getCode(), product);
+            productList.append("Code: ").append(product.getmaSanPham()).append(", Name: ").append(product.getTenSanPham()).append(", Quantity: ").append(product.getsoLuongTon()).append("\n");
+            warehouseProducts.get(warehouseCode).put(product.getmaSanPham(), product);
         }
         productListTextArea.setText(productList.toString());
     }

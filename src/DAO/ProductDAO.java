@@ -4,7 +4,7 @@ import java.sql.*;
 import java.util.*;
 
 import model.Product;
-
+//c
 public class ProductDAO {
     private Connection connection;
 
@@ -49,15 +49,15 @@ public class ProductDAO {
         String queryStock = "INSERT INTO TonKho (MaTonKho, MaSanPham, MaKho, SoLuongTon) VALUES (?, ?, ?, ?)";
         try {
             PreparedStatement stmtProduct = connection.prepareStatement(queryProduct);
-            stmtProduct.setString(1, product.getCode());
-            stmtProduct.setString(2, product.getName());
+            stmtProduct.setString(1, product.getmaSanPham());
+            stmtProduct.setString(2, product.getTenSanPham());
             stmtProduct.executeUpdate();
 
             PreparedStatement stmtStock = connection.prepareStatement(queryStock);
             stmtStock.setString(1, generateUniqueCode()); // Generate a unique code for MaTonKho
-            stmtStock.setString(2, product.getCode());
+            stmtStock.setString(2, product.getmaSanPham());
             stmtStock.setString(3, warehouseCode);
-            stmtStock.setInt(4, product.getQuantity());
+            stmtStock.setInt(4, product.getsoLuongTon());
             stmtStock.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Error in addProduct: " + e.getMessage());
@@ -69,8 +69,8 @@ public class ProductDAO {
         String query = "UPDATE SanPham SET TenSanPham = ? WHERE MaSanPham = ?";
         try {
             PreparedStatement stmt = connection.prepareStatement(query);
-            stmt.setString(1, product.getName());
-            stmt.setString(2, product.getCode());
+            stmt.setString(1, product.getTenSanPham());
+            stmt.setString(2, product.getmaSanPham());
             stmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Error in updateProduct: " + e.getMessage());

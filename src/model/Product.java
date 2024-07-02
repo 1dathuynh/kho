@@ -1,37 +1,37 @@
 package model;
 
 public class Product {
-    private String code;
-    private String name;
-    private int quantity;
+    private String maSanPham;
+    private String tenSanPham;
+    private int soLuongTon;
 
-    public Product(String code, String name, int quantity) {
-        this.code = code;
-        this.name = name;
-        this.quantity = quantity;
+    public Product(String maSanPham, String tenSanPham, int soLuongTon) {
+        this.maSanPham = maSanPham;
+        this.tenSanPham = tenSanPham;
+        this.soLuongTon = soLuongTon;
     }
 
-    public String getCode() {
-        return code;
+    public String getmaSanPham() {
+        return maSanPham;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setMaSanPham(String maSanPham) {
+        this.maSanPham = maSanPham;
     }
 
-    public String getName() {
-        return name;
+    public String getTenSanPham() {
+        return tenSanPham;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void settenSanPham(String tenSanPham) {
+        this.tenSanPham = tenSanPham;
     }
 
-    public int getQuantity() {
-        return quantity;
+    public int getsoLuongTon() {
+        return soLuongTon;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setsoLuongTon(int soLuongTon) {
+        this.soLuongTon = soLuongTon;
     }
 }

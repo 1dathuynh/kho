@@ -1,5 +1,5 @@
 package view;
-
+//
 public class Product {
     private String code;
     private String name;
