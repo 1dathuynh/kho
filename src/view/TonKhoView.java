@@ -8,14 +8,14 @@ import javax.swing.table.DefaultTableModel;
 import java.util.*;
 
 import DAO.ProductDAO;
-import model.Product;
+import model.SanPham;
 
 public class TonKhoView extends JFrame {
     private JPanel contentPane;
     private JTable table;
     private JTextArea productListTextArea;
     private DefaultTableModel tableModel;
-    private Map<String, Map<String, Product>> warehouseProducts = new HashMap<>();
+    private Map<String, Map<String, SanPham>> warehouseProducts = new HashMap<>();
     private String selectedProductCode;
     private ProductDAO productDAO;
 
@@ -146,9 +146,9 @@ public class TonKhoView extends JFrame {
                 ProductForm productForm = new ProductForm(null);
                 int result = JOptionPane.showConfirmDialog(null, productForm, "Thêm Sản Phẩm", JOptionPane.OK_CANCEL_OPTION);
                 if (result == JOptionPane.OK_OPTION) {
-                    Product product = productForm.getProduct();
-                    if (product != null) {
-                        productDAO.addProduct(product, warehouseCode);
+                    SanPham sanPham = productForm.getProduct();
+                    if (sanPham != null) {
+                        productDAO.addProduct(sanPham, warehouseCode);
                         updateProductList(warehouseCode);
                     }
                 }
@@ -162,12 +162,12 @@ public class TonKhoView extends JFrame {
                     return;
                 }
                 String warehouseCode = (String) tableModel.getValueAt(table.getSelectedRow(), 0);
-                Map<String, Product> products = warehouseProducts.get(warehouseCode);
-                Product product = products.get(selectedProductCode);
-                ProductForm productForm = new ProductForm(product);
+                Map<String, SanPham> sanPhams = warehouseProducts.get(warehouseCode);
+                SanPham sanPham = sanPhams.get(selectedProductCode);
+                ProductForm productForm = new ProductForm(sanPham);
                 int result = JOptionPane.showConfirmDialog(null, productForm, "Sửa Sản Phẩm", JOptionPane.OK_CANCEL_OPTION);
                 if (result == JOptionPane.OK_OPTION) {
-                    Product updatedProduct = productForm.getProduct();
+                    SanPham updatedProduct = productForm.getProduct();
                     if (updatedProduct != null) {
                         productDAO.updateProduct(updatedProduct);
                         updateProductList(warehouseCode);
@@ -190,12 +190,12 @@ public class TonKhoView extends JFrame {
     }
 
     private void updateProductList(String warehouseCode) {
-        ArrayList<Product> products = (ArrayList<Product>) productDAO.getProductsByWarehouseCode(warehouseCode);
+        ArrayList<SanPham> sanPhams = (ArrayList<SanPham>) productDAO.getProductsByWarehouseCode(warehouseCode);
         warehouseProducts.put(warehouseCode, new HashMap<>());
         StringBuilder productList = new StringBuilder();
-        for (Product product : products) {
-            productList.append("Code: ").append(product.getmaSanPham()).append(", Name: ").append(product.getTenSanPham()).append(", Quantity: ").append(product.getsoLuongTon()).append("\n");
-            warehouseProducts.get(warehouseCode).put(product.getmaSanPham(), product);
+        for (SanPham sanPham : sanPhams) {
+            productList.append("Code: ").append(sanPham.getMaSanPham()).append(", Name: ").append(sanPham.gettenSanPham()).append(", Quantity: ").append(sanPham.getGiaBan()).append("\n");
+            warehouseProducts.get(warehouseCode).put(sanPham.getMaSanPham(), sanPham);
         }
         productListTextArea.setText(productList.toString());
     }
