@@ -6,6 +6,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.*;
+import java.util.List;
 
 import DAO.ProductDAO;
 import model.SanPham;
@@ -20,6 +21,8 @@ public class TonKhoView extends JFrame {
     private Map<String, Map<String, SanPham>> warehouseProducts = new HashMap<>();
     private String selectedProductCode;
     private ProductDAO productDAO;
+    private DefaultListModel<Kho> warehouseListModel;
+    private JList<Kho> warehouseList;
 
     public TonKhoView() {
         productDAO = new ProductDAO();
@@ -77,17 +80,13 @@ public class TonKhoView extends JFrame {
         tablePanel.add(buttonPanel, BorderLayout.NORTH);
 
         String[] columnNames = {"Mã Kho", "Tên Khu Vực", "Ghi Chú Hàng Tồn Kho"};
-        Object[][] data = {
-            {"K1", "apple", "Notes for apple"},
-            {"K2", "realme", "Notes for realme"},
-            {"K3", "oppo", "Notes for oppo"},
-            {"K3", "oppo", "Notes for oppo"}
-        };
-
-        tableModel = new DefaultTableModel(data, columnNames);
+        tableModel = new DefaultTableModel(columnNames, 0);
         table = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(table);
         tablePanel.add(scrollPane, BorderLayout.CENTER);
+
+        JButton addWarehouseButton = new JButton("Thêm Kho");
+        buttonPanel.add(addWarehouseButton);
 
         tabbedPane.addTab("Thông Tin Kho Hàng", null, tablePanel, null);
 
@@ -96,7 +95,6 @@ public class TonKhoView extends JFrame {
 
         JLabel productLabel = new JLabel("Danh Sách Sản Phẩm Hiện Có Tại Khu Vực:");
         productPanel.add(productLabel, BorderLayout.NORTH);
-
 
         productListTextArea = new JTextArea();
         productListTextArea.setEditable(false);
@@ -113,13 +111,12 @@ public class TonKhoView extends JFrame {
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
-                    if (line != null && line.startsWith("Code: ")) {
-                        selectedProductCode = line.substring(6, line.indexOf(", Name:")).trim();
+                    if (line != null && line.startsWith("Mã Sản Phẩm: ")) {
+                        selectedProductCode = line.substring(12, line.indexOf(", Tên Sản Phẩm:")).trim();
                     }
                 }
             }
         });
-
 
         JScrollPane productScrollPane = new JScrollPane(productListTextArea);
         productScrollPane.setPreferredSize(new Dimension(200, 0));
@@ -190,10 +187,39 @@ public class TonKhoView extends JFrame {
                 updateProductList(warehouseCode);
             }
         });
+
+        addWarehouseButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                showAddWarehouseDialog();
+            }
+        });
+
+        loadWarehouses();
+    }
+
+    private void loadWarehouses() {
+        List<Kho> warehouses = productDAO.getAllWarehouses();
+        tableModel.setRowCount(0); // Clear existing rows
+        for (Kho kho : warehouses) {
+            tableModel.addRow(new Object[]{kho.getMaKho(), kho.getTenKho()});
+        }
+    }
+
+    private void showAddWarehouseDialog() {
+        WarehouseForm warehouseForm = new WarehouseForm(null);
+        int result = JOptionPane.showConfirmDialog(this, warehouseForm, "Thêm Kho", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        if (result == JOptionPane.OK_OPTION) {
+            Kho kho = warehouseForm.getWarehouse();
+            if (kho != null) {
+                productDAO.addWarehouse(kho);
+                loadWarehouses();
+                JOptionPane.showMessageDialog(this, "Kho đã được thêm thành công.");
+            }
+        }
     }
 
     private void updateProductList(String warehouseCode) {
-        ArrayList<SanPham> sanPhams = (ArrayList<SanPham>) productDAO.getProductsByWarehouseCode(warehouseCode);
+        List<SanPham> sanPhams = productDAO.getProductsByWarehouseCode(warehouseCode);
         warehouseProducts.put(warehouseCode, new HashMap<>());
         StringBuilder productList = new StringBuilder();
         for (SanPham sanPham : sanPhams) {

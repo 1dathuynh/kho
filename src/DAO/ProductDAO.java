@@ -6,6 +6,7 @@ import java.util.*;
 import model.SanPham;
 import model.TonKho;
 //c
+import model.Kho;
 public class ProductDAO {
     private Connection connection;
 
@@ -21,6 +22,37 @@ public class ProductDAO {
             e.printStackTrace();
         }
     }
+    public List<Kho> getAllWarehouses() {
+        List<Kho> warehouseList = new ArrayList<>();
+        String query = "SELECT * FROM Kho";
+        try {
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                String warehouseCode = rs.getString("MaKho");
+                String warehouseName = rs.getString("TenKho");
+                warehouseList.add(new Kho(warehouseCode, warehouseName));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error in getAllWarehouses: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return warehouseList;
+    }
+
+    public void addWarehouse(Kho kho) {
+        String query = "INSERT INTO Kho (MaKho, TenKho) VALUES (?, ?)";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(query);
+            stmt.setString(1, kho.getMaKho());
+            stmt.setString(2, kho.getTenKho());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Error in addWarehouse: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
 
     public List<SanPham> getProductsByWarehouseCode(String warehouseCode) {
         List<SanPham> productList = new ArrayList<>();
