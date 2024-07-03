@@ -9,6 +9,8 @@ import java.util.*;
 
 import DAO.ProductDAO;
 import model.SanPham;
+import model.Kho;
+import view.WarehouseForm;
 
 public class TonKhoView extends JFrame {
     private JPanel contentPane;
@@ -144,10 +146,10 @@ public class TonKhoView extends JFrame {
                     return;
                 }
                 String warehouseCode = (String) tableModel.getValueAt(table.getSelectedRow(), 0);
-                ProductForm productForm = new ProductForm(null);
-                int result = JOptionPane.showConfirmDialog(null, productForm, "Thêm Sản Phẩm", JOptionPane.OK_CANCEL_OPTION);
+                ProductInput productInput = new ProductInput(null);
+                int result = JOptionPane.showConfirmDialog(null, productInput, "Thêm Sản Phẩm", JOptionPane.OK_CANCEL_OPTION);
                 if (result == JOptionPane.OK_OPTION) {
-                    SanPham sanPham = productForm.getProduct();
+                    SanPham sanPham = productInput.getProduct();
                     if (sanPham != null) {
                         productDAO.addProduct(sanPham, warehouseCode);
                         updateProductList(warehouseCode);
@@ -165,10 +167,10 @@ public class TonKhoView extends JFrame {
                 String warehouseCode = (String) tableModel.getValueAt(table.getSelectedRow(), 0);
                 Map<String, SanPham> sanPhams = warehouseProducts.get(warehouseCode);
                 SanPham sanPham = sanPhams.get(selectedProductCode);
-                ProductForm productForm = new ProductForm(sanPham);
-                int result = JOptionPane.showConfirmDialog(null, productForm, "Sửa Sản Phẩm", JOptionPane.OK_CANCEL_OPTION);
+                ProductInput productInput = new ProductInput(sanPham);
+                int result = JOptionPane.showConfirmDialog(null, productInput, "Sửa Sản Phẩm", JOptionPane.OK_CANCEL_OPTION);
                 if (result == JOptionPane.OK_OPTION) {
-                    SanPham updatedProduct = productForm.getProduct();
+                    SanPham updatedProduct = productInput.getProduct();
                     if (updatedProduct != null) {
                         productDAO.updateProduct(updatedProduct);
                         updateProductList(warehouseCode);

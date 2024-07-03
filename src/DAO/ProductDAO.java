@@ -96,9 +96,12 @@ public class ProductDAO {
             e.printStackTrace();
         }
     }
+    
+
 
     private String generateUniqueCode() {
         // Generate a unique code for MaTonKho, e.g., using UUID
         return UUID.randomUUID().toString().substring(0, 3);
     }
+    
 }

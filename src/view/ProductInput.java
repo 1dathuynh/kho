@@ -4,12 +4,12 @@ import java.awt.*;
 import javax.swing.*;
 import model.SanPham;
 
-public class ProductForm extends JPanel {
+public class ProductInput extends JPanel {
     private JTextField codeField;
     private JTextField nameField;
     private JTextField quantityField;
 
-    public ProductForm(SanPham sanPham) {
+    public ProductInput(SanPham sanPham) {
         setLayout(new GridLayout(3, 2));
 
         add(new JLabel("Mã sản phẩm:"));
