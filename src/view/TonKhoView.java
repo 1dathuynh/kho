@@ -11,7 +11,6 @@ import java.util.List;
 import DAO.ProductDAO;
 import model.SanPham;
 import model.Kho;
-import view.WarehouseForm;
 
 public class TonKhoView extends JFrame {
     private JPanel contentPane;
@@ -72,10 +71,12 @@ public class TonKhoView extends JFrame {
         JButton addButton = new JButton("Thêm");
         JButton editButton = new JButton("Sửa");
         JButton deleteButton = new JButton("Xóa");
+        JButton updateStockButton = new JButton("Cập nhật số lượng tồn");
 
         buttonPanel.add(addButton);
         buttonPanel.add(editButton);
         buttonPanel.add(deleteButton);
+        buttonPanel.add(updateStockButton);
 
         tablePanel.add(buttonPanel, BorderLayout.NORTH);
 
@@ -184,6 +185,18 @@ public class TonKhoView extends JFrame {
                 }
                 String warehouseCode = (String) tableModel.getValueAt(table.getSelectedRow(), 0);
                 productDAO.deleteProduct(selectedProductCode, warehouseCode);
+                updateProductList(warehouseCode);
+            }
+        });
+
+        updateStockButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (selectedProductCode == null || table.getSelectedRow() == -1) {
+                    JOptionPane.showMessageDialog(null, "Chọn một sản phẩm để cập nhật số lượng tồn.");
+                    return;
+                }
+                String warehouseCode = (String) tableModel.getValueAt(table.getSelectedRow(), 0);
+                productDAO.updateTonKho(selectedProductCode, warehouseCode);
                 updateProductList(warehouseCode);
             }
         });

@@ -3,10 +3,10 @@ package DAO;
 import java.sql.*;
 import java.util.*;
 
+import model.Kho;
 import model.SanPham;
 import model.TonKho;
-//c
-import model.Kho;
+
 public class ProductDAO {
     private Connection connection;
 
@@ -22,22 +22,57 @@ public class ProductDAO {
             e.printStackTrace();
         }
     }
+
+    // Method to fetch quantity from ChiTietNhap
+    public int fetchQuantityFromChiTietNhap(String productCode, String warehouseCode) {
+        int quantity = 0;
+        String query = "SELECT SUM(SoLuongNhap) AS totalQuantity FROM ChiTietNhap WHERE MaSanPham = ? AND MaKho = ?";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(query);
+            stmt.setString(1, productCode);
+            stmt.setString(2, warehouseCode);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                quantity = rs.getInt("totalQuantity");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error in fetchQuantityFromChiTietNhap: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return quantity;
+    }
+
+    // Method to update TonKho based on fetched quantity
+    public void updateTonKho(String productCode, String warehouseCode) {
+        int quantity = fetchQuantityFromChiTietNhap(productCode, warehouseCode);
+        String query = "UPDATE TonKho SET SoLuongTon = ? WHERE MaSanPham = ? AND MaKho = ?";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(query);
+            stmt.setInt(1, quantity);
+            stmt.setString(2, productCode);
+            stmt.setString(3, warehouseCode);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Error in updateTonKho: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    // Add other necessary DAO methods, e.g., for fetching all warehouses, adding a warehouse, etc.
     public List<Kho> getAllWarehouses() {
-        List<Kho> warehouseList = new ArrayList<>();
+        List<Kho> warehouses = new ArrayList<>();
         String query = "SELECT * FROM Kho";
         try {
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()) {
-                String warehouseCode = rs.getString("MaKho");
-                String warehouseName = rs.getString("TenKho");
-                warehouseList.add(new Kho(warehouseCode, warehouseName));
+                Kho kho = new Kho(rs.getString("MaKho"), rs.getString("TenKho"));
+                warehouses.add(kho);
             }
         } catch (SQLException e) {
-            System.out.println("Error in getAllWarehouses: " + e.getMessage());
             e.printStackTrace();
         }
-        return warehouseList;
+        return warehouses;
     }
 
     public void addWarehouse(Kho kho) {
@@ -48,52 +83,47 @@ public class ProductDAO {
             stmt.setString(2, kho.getTenKho());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error in addWarehouse: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-
     public List<SanPham> getProductsByWarehouseCode(String warehouseCode) {
-        List<SanPham> productList = new ArrayList<>();
-        String query = "SELECT sp.MaSanPham, sp.TenSanPham, tk.SoLuongTon " +
-                       "FROM SanPham sp " +
-                       "JOIN TonKho tk ON sp.MaSanPham = tk.MaSanPham " +
-                       "WHERE tk.MaKho = ?";
+        List<SanPham> sanPhams = new ArrayList<>();
+        String query = "SELECT * FROM SanPham INNER JOIN TonKho ON SanPham.MaSanPham = TonKho.MaSanPham WHERE TonKho.MaKho = ?";
         try {
             PreparedStatement stmt = connection.prepareStatement(query);
             stmt.setString(1, warehouseCode);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                String productCode = rs.getString("MaSanPham");
-                String productName = rs.getString("TenSanPham");
-                int quantity = rs.getInt("SoLuongTon");
-                productList.add(new SanPham(productCode, productName, quantity, quantity));
+                SanPham sanPham = new SanPham(rs.getString("MaSanPham"), rs.getString("TenSanPham"), rs.getDouble("SoLuongTon"), 0);
+                sanPhams.add(sanPham);
             }
         } catch (SQLException e) {
-            System.out.println("Error in getProductsByWarehouseCode: " + e.getMessage());
             e.printStackTrace();
         }
-        return productList;
+        return sanPhams;
     }
 
     public void addProduct(SanPham sanPham, String warehouseCode) {
-        String queryProduct = "INSERT INTO SanPham (MaSanPham, TenSanPham) VALUES (?, ?)";
-        String queryStock = "INSERT INTO TonKho (MaTonKho, MaSanPham, MaKho, SoLuongTon) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO SanPham (MaSanPham, TenSanPham) VALUES (?, ?)";
         try {
-            PreparedStatement stmtProduct = connection.prepareStatement(queryProduct);
-            stmtProduct.setString(1, sanPham.getMaSanPham());
-            stmtProduct.setString(2, sanPham.getTenSanPham());
-            stmtProduct.executeUpdate();
-
-            PreparedStatement stmtStock = connection.prepareStatement(queryStock);
-            stmtStock.setString(1, generateUniqueCode()); // Generate a unique code for MaTonKho
-            stmtStock.setString(2, sanPham.getMaSanPham());
-            stmtStock.setString(3, warehouseCode);
-            stmtStock.setDouble(4, sanPham.getGiaBan());
-            stmtStock.executeUpdate();
+            PreparedStatement stmt = connection.prepareStatement(query);
+            stmt.setString(1, sanPham.getMaSanPham());
+            stmt.setString(2, sanPham.getTenSanPham());
+            stmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error in addProduct: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        query = "INSERT INTO TonKho (MaTonKho, MaSanPham, MaKho, SoLuongTon) VALUES (?, ?, ?, ?)";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(query);
+            stmt.setString(1, UUID.randomUUID().toString());
+            stmt.setString(2, sanPham.getMaSanPham());
+            stmt.setString(3, warehouseCode);
+            stmt.setDouble(4, sanPham.getGiaBan());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -106,34 +136,38 @@ public class ProductDAO {
             stmt.setString(2, sanPham.getMaSanPham());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error in updateProduct: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        query = "UPDATE TonKho SET SoLuongTon = ? WHERE MaSanPham = ?";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(query);
+            stmt.setDouble(1, sanPham.getGiaBan());
+            stmt.setString(2, sanPham.getMaSanPham());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     public void deleteProduct(String productCode, String warehouseCode) {
-        String queryStock = "DELETE FROM TonKho WHERE MaSanPham = ? AND MaKho = ?";
-        String queryProduct = "DELETE FROM SanPham WHERE MaSanPham = ?";
+        String query = "DELETE FROM SanPham WHERE MaSanPham = ?";
         try {
-            PreparedStatement stmtStock = connection.prepareStatement(queryStock);
-            stmtStock.setString(1, productCode);
-            stmtStock.setString(2, warehouseCode);
-            stmtStock.executeUpdate();
-
-            PreparedStatement stmtProduct = connection.prepareStatement(queryProduct);
-            stmtProduct.setString(1, productCode);
-            stmtProduct.executeUpdate();
+            PreparedStatement stmt = connection.prepareStatement(query);
+            stmt.setString(1, productCode);
+            stmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error in deleteProduct: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        query = "DELETE FROM TonKho WHERE MaSanPham = ? AND MaKho = ?";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(query);
+            stmt.setString(1, productCode);
+            stmt.setString(2, warehouseCode);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-    
-
-
-    private String generateUniqueCode() {
-        // Generate a unique code for MaTonKho, e.g., using UUID
-        return UUID.randomUUID().toString().substring(0, 3);
-    }
-    
 }
