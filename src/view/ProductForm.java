@@ -23,7 +23,7 @@ public class ProductForm extends JPanel {
         add(new JLabel("Tên sản phẩm:"));
         nameField = new JTextField();
         if (sanPham != null) {
-            nameField.setText(sanPham.gettenSanPham());
+            nameField.setText(sanPham.getTenSanPham());
         }
         add(nameField);
 
@@ -46,6 +46,6 @@ public class ProductForm extends JPanel {
             return null;
         }
 
-        return new SanPham(code, name, quantity);
+        return new SanPham(code, name, quantity, quantity);
     }
 }

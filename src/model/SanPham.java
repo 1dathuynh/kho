@@ -1,25 +1,27 @@
 package model;
-
 public class SanPham {
     private String maSanPham;
     private String tenSanPham;
-    private int giaBan;
+    private double giaNhap; // Có thể để null
+    private double giaBan;
 
-    public SanPham(String maSanPham, String tenSanPham, int giaBan) {
+    public SanPham(String maSanPham, String tenSanPham, double giaNhap, double giaBan) {
         this.maSanPham = maSanPham;
         this.tenSanPham = tenSanPham;
+        this.giaNhap = giaNhap;
         this.giaBan = giaBan;
     }
 
+    // Getters và Setters
     public String getMaSanPham() {
         return maSanPham;
     }
 
-    public void setMaSanPham(String MaSanPham) {
-        this.maSanPham = MaSanPham;
+    public void setMaSanPham(String maSanPham) {
+        this.maSanPham = maSanPham;
     }
 
-    public String gettenSanPham() {
+    public String getTenSanPham() {
         return tenSanPham;
     }
 
@@ -27,11 +29,21 @@ public class SanPham {
         this.tenSanPham = tenSanPham;
     }
 
-    public int getGiaBan() {
+    public double getGiaNhap() {
+        return giaNhap;
+    }
+
+    public void setGiaNhap(double giaNhap) {
+        this.giaNhap = giaNhap;
+    }
+
+    public double getGiaBan() {
         return giaBan;
     }
 
-    public void setGiaBan(int giaBan) {
+    public void setGiaBan(double giaBan) {
         this.giaBan = giaBan;
     }
+    
+    
 }

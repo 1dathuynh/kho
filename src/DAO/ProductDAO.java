@@ -4,6 +4,7 @@ import java.sql.*;
 import java.util.*;
 
 import model.SanPham;
+import model.TonKho;
 //c
 public class ProductDAO {
     private Connection connection;
@@ -35,7 +36,7 @@ public class ProductDAO {
                 String productCode = rs.getString("MaSanPham");
                 String productName = rs.getString("TenSanPham");
                 int quantity = rs.getInt("SoLuongTon");
-                productList.add(new SanPham(productCode, productName, quantity));
+                productList.add(new SanPham(productCode, productName, quantity, quantity));
             }
         } catch (SQLException e) {
             System.out.println("Error in getProductsByWarehouseCode: " + e.getMessage());
@@ -50,14 +51,14 @@ public class ProductDAO {
         try {
             PreparedStatement stmtProduct = connection.prepareStatement(queryProduct);
             stmtProduct.setString(1, sanPham.getMaSanPham());
-            stmtProduct.setString(2, sanPham.gettenSanPham());
+            stmtProduct.setString(2, sanPham.getTenSanPham());
             stmtProduct.executeUpdate();
 
             PreparedStatement stmtStock = connection.prepareStatement(queryStock);
             stmtStock.setString(1, generateUniqueCode()); // Generate a unique code for MaTonKho
             stmtStock.setString(2, sanPham.getMaSanPham());
             stmtStock.setString(3, warehouseCode);
-            stmtStock.setInt(4, sanPham.getGiaBan());
+            stmtStock.setDouble(4, sanPham.getGiaBan());
             stmtStock.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Error in addProduct: " + e.getMessage());
@@ -69,7 +70,7 @@ public class ProductDAO {
         String query = "UPDATE SanPham SET TenSanPham = ? WHERE MaSanPham = ?";
         try {
             PreparedStatement stmt = connection.prepareStatement(query);
-            stmt.setString(1, sanPham.gettenSanPham());
+            stmt.setString(1, sanPham.getTenSanPham());
             stmt.setString(2, sanPham.getMaSanPham());
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -101,24 +102,3 @@ public class ProductDAO {
         return UUID.randomUUID().toString().substring(0, 3);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

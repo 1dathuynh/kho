@@ -78,6 +78,7 @@ public class TonKhoView extends JFrame {
         Object[][] data = {
             {"K1", "apple", "Notes for apple"},
             {"K2", "realme", "Notes for realme"},
+            {"K3", "oppo", "Notes for oppo"},
             {"K3", "oppo", "Notes for oppo"}
         };
 
@@ -194,7 +195,7 @@ public class TonKhoView extends JFrame {
         warehouseProducts.put(warehouseCode, new HashMap<>());
         StringBuilder productList = new StringBuilder();
         for (SanPham sanPham : sanPhams) {
-            productList.append("Code: ").append(sanPham.getMaSanPham()).append(", Name: ").append(sanPham.gettenSanPham()).append(", Quantity: ").append(sanPham.getGiaBan()).append("\n");
+            productList.append("Mã Sản Phẩm: ").append(sanPham.getMaSanPham()).append(", Tên Sản Phẩm: ").append(sanPham.getTenSanPham()).append(", Số lượng tồn: ").append(sanPham.getGiaBan()).append("\n");
             warehouseProducts.get(warehouseCode).put(sanPham.getMaSanPham(), sanPham);
         }
         productListTextArea.setText(productList.toString());

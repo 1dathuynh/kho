@@ -4,7 +4,7 @@ public class TonKho {
     private String maTonKho;
     private String maSanPham;
     private String maKho;
-    private int soLuongTon;
+    private static int soLuongTon;  // Không còn là biến static
 
     public TonKho(String maTonKho, String maSanPham, String maKho, int soLuongTon) {
         this.maTonKho = maTonKho;
@@ -17,31 +17,31 @@ public class TonKho {
         return maTonKho;
     }
 
-    public void setMaTonKho(String MaTonKho) {
-        this.maTonKho = MaTonKho;
+    public void setMaTonKho(String maTonKho) {
+        this.maTonKho = maTonKho;
     }
 
     public String getMaSanPham() {
         return maSanPham;
     }
 
-    public void setMaSanPham(String MaSanPham) {
-        this.maSanPham = MaSanPham;
+    public void setMaSanPham(String maSanPham) {
+        this.maSanPham = maSanPham;
     }
 
     public String getMaKho() {
         return maKho;
     }
 
-    public void setMaKho(String MaKho) {
-        this.maKho = MaKho;
+    public void setMaKho(String maKho) {
+        this.maKho = maKho;
     }
 
-    public int getSoLuongTon() {
+    public static int getSoLuongTon() {
         return soLuongTon;
     }
 
-    public void setQuantity(int SoLuongTon) {
-        this.soLuongTon = SoLuongTon;
+    public void setSoLuongTon(int soLuongTon) {
+        this.soLuongTon = soLuongTon;
     }
 }
